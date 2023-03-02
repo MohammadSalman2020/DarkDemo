@@ -16,7 +16,7 @@ namespace DarkDemo
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmUsers());
+            Application.Run(new Customer());
         }
     }
 }
