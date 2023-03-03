@@ -32,6 +32,8 @@ namespace DarkDemo
         public DbSet<tblCustomerCheck> tblCustomerChecks { get; set; }
         public DbSet<tblCustomerInfo> tblCustomerInfoes { get; set; }
         public DbSet<tblCameraImage> tblCameraImages { get; set; }
+        public DbSet<tblScannerImage> tblScannerImages { get; set; }
+        public DbSet<tblUser> tblUsers { get; set; }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
         {

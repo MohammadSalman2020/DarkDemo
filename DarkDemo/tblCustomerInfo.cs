@@ -18,6 +18,7 @@ namespace DarkDemo
         {
             this.tblCustomerChecks = new HashSet<tblCustomerCheck>();
             this.tblCameraImages = new HashSet<tblCameraImage>();
+            this.tblScannerImages = new HashSet<tblScannerImage>();
         }
     
         public int CustomerID { get; set; }
@@ -37,5 +38,6 @@ namespace DarkDemo
     
         public virtual ICollection<tblCustomerCheck> tblCustomerChecks { get; set; }
         public virtual ICollection<tblCameraImage> tblCameraImages { get; set; }
+        public virtual ICollection<tblScannerImage> tblScannerImages { get; set; }
     }
 }

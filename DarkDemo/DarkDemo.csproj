@@ -31,6 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>free-30-instagram-stories-icons73_122620.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
@@ -113,6 +116,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScannerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ScannerForm.Designer.cs">
+      <DependentUpon>ScannerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="sp_helpdiagramdefinition_Result.cs">
       <DependentUpon>DbLiquior.tt</DependentUpon>
     </Compile>
@@ -129,6 +138,12 @@
       <DependentUpon>DbLiquior.tt</DependentUpon>
     </Compile>
     <Compile Include="tblCustomerInfo.cs">
+      <DependentUpon>DbLiquior.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblScannerImage.cs">
+      <DependentUpon>DbLiquior.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblUser.cs">
       <DependentUpon>DbLiquior.tt</DependentUpon>
     </Compile>
     <Compile Include="WebCam_PictureBox.cs" />
@@ -163,6 +178,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="ScannerForm.resx">
+      <DependentUpon>ScannerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EntityDeploy Include="DbLiquior.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DbLiquior.Designer.cs</LastGenOutput>
@@ -225,6 +243,24 @@
       <DependentUpon>DbLiquior.edmx</DependentUpon>
       <LastGenOutput>DbLiquior.cs</LastGenOutput>
     </Content>
+    <Content Include="free-30-instagram-stories-icons73_122620.ico" />
+    <None Include="Resources\icons8-logs-64.png" />
+    <None Include="Resources\icons8-logout-rounded-64.png" />
+    <None Include="Resources\icons8-bad-decision-100.png" />
+    <None Include="Resources\icons8-minus-sign-24.png" />
+    <None Include="Resources\icons8-x-coordinate-30.png" />
+    <None Include="Resources\72158.png" />
+    <None Include="Resources\icons8-wine-and-glass-64.png" />
+    <None Include="Resources\icons8-barcode-reader-50.png" />
+    <None Include="Resources\icons8-compact-camera-50.png" />
+    <None Include="Resources\icons8-user-50.png" />
+    <None Include="Resources\icons8-checkmark-30.png" />
+    <None Include="Resources\icons8-customer-50 %281%29.png" />
+    <None Include="Resources\icons8-customer-50.png" />
+    <None Include="Resources\icons8-maximize-window-30.png" />
+    <None Include="Resources\1904666-calculate-close-delete-hide-minimize-minus-remove_122516.ico" />
+    <None Include="Resources\wine-bottle.png" />
+    <None Include="Resources\liquor.png" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

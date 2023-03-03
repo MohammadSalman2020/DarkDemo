@@ -85,5 +85,11 @@ namespace DarkDemo
         {
             SaveImageCapture(pictureBox2.Image);
         }
+
+        private void CameraForm_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(41, 44, 51), ButtonBorderStyle.Solid);
+
+        }
     }
 }

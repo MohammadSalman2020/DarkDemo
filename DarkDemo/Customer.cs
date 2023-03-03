@@ -20,7 +20,7 @@ namespace DarkDemo
 
         private void Customer_Load(object sender, EventArgs e)
         {
-
+            
             txtDate.Format = DateTimePickerFormat.Custom;
             txtDate.CustomFormat = "MM/dd/yyyy hh:mm:ss";
 
@@ -52,6 +52,7 @@ namespace DarkDemo
         }
         private void button4_Click(object sender, EventArgs e)
         {
+         
             ChequeDetail obj = new ChequeDetail();
             obj.ShowDialog();
         }
@@ -94,46 +95,61 @@ namespace DarkDemo
         }
         private void button1_Click(object sender, EventArgs e)
         {
+           
             if (!IsEmpty())
             {
                 string Tag = lblTag.Tag.ToString();
-
-                if (Tag == "Add")
+                if (CameraImages.Count > 0 && ScannerImages.Count > 0)
                 {
+                  
 
-                    tblCustomerInfo obj = new tblCustomerInfo();
-                    obj.CusSSn = txtSSN.Text;
-                    obj.CusDOB = Convert.ToDateTime(txtDate.Text);
-                    obj.CusCity = txtCity.Text;
-                    obj.Cuslastname = txtLastName.Text;
-                    obj.CusDriverLicense = txtLicense.Text;
-                    obj.CusAddress = txtAddress.Text;
-                    obj.CusCellPhone = txtPhone.Text;
-                    obj.CusFirstname = txtFirstName.Text;
-                    obj.CusState = txtState.Text;
-                    obj.CusZipCode = int.Parse(txtZipCode.Text);
-                    obj.CusMiddlename = txtMiddle.Text;
-                    obj.CusWorkPhone = txtWorkPhone.Text;
-                    db.tblCustomerInfoes.Add(obj);
-                    db.SaveChanges();
-
-                    int CusID = db.tblCustomerInfoes.Max(p => p.CustomerID);
-
-                    foreach (var item in CameraImages)
+                    if (Tag == "Add")
                     {
-                        tblCameraImage obj2 = new tblCameraImage();
-                        obj2.MainImage = ImageToByteArray(item);
-                        obj2.CustomerID = CusID;
 
-                        db.tblCameraImages.Add(obj2);
+                        tblCustomerInfo obj = new tblCustomerInfo();
+                        obj.CusSSn = txtSSN.Text;
+                        obj.CusDOB = Convert.ToDateTime(txtDate.Text);
+                        obj.CusCity = txtCity.Text;
+                        obj.Cuslastname = txtLastName.Text;
+                        obj.CusDriverLicense = txtLicense.Text;
+                        obj.CusAddress = txtAddress.Text;
+                        obj.CusCellPhone = txtPhone.Text;
+                        obj.CusFirstname = txtFirstName.Text;
+                        obj.CusState = txtState.Text;
+                        obj.CusZipCode = int.Parse(txtZipCode.Text);
+                        obj.CusMiddlename = txtMiddle.Text;
+                        obj.CusWorkPhone = txtWorkPhone.Text;
+                        db.tblCustomerInfoes.Add(obj);
                         db.SaveChanges();
+
+                        int CusID = db.tblCustomerInfoes.Max(p => p.CustomerID);
+
+                        foreach (var item in CameraImages)
+                        {
+                            tblCameraImage obj2 = new tblCameraImage();
+                            obj2.MainImage = ImageToByteArray(item);
+                            obj2.CustomerID = CusID;
+
+                            db.tblCameraImages.Add(obj2);
+                            db.SaveChanges();
+                        }
+
+                        foreach (var item in ScannerImages)
+                        {
+                            tblScannerImage obj3 = new tblScannerImage();
+                            obj3.MainScanImage = ImageToByteArray(item);
+                            obj3.CustomerID = CusID;
+
+                            db.tblScannerImages.Add(obj3);
+                            db.SaveChanges();
+                        }
+
+
+
+                        MessageBox.Show("Customer :" + txtFirstName.Text + "-" + txtLastName.Text + ", Added Success");
+                        clear();
+                        LoadData();
                     }
-
-
-
-                    MessageBox.Show("Customer :" + txtFirstName.Text + "-" + txtLastName.Text + ", Added Success");
-                    clear();
-                    LoadData();
                 }
                 else if (Tag == "Update")
                 {
@@ -326,6 +342,7 @@ namespace DarkDemo
                     db.SaveChanges();
                     LoadData();
                     clear();
+                    ID = 0;
                 }
                 else
                 {
@@ -368,13 +385,44 @@ namespace DarkDemo
                 clear();
                 LoadData();
                 MessageBox.Show("Customer :" + CusName + ",Deleted Success");
-
+                ID = 0;
             }
             else
             {
                 MessageBox.Show("Please select a customer from Data first");
 
             }
+        }
+        public static List<Bitmap> ScannerImages = new List<Bitmap>();
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            // open file dialog   
+            OpenFileDialog open = new OpenFileDialog();
+            // image filters  
+            open.Multiselect = true;
+
+            open.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp";
+            if (open.ShowDialog() == DialogResult.OK)
+            {
+                foreach (var item in open.FileNames)
+                {
+                    ScannerImages.Add(
+                       new Bitmap(item));
+
+                    pictureBox1.Image = new Bitmap(open.FileName);
+                }
+                lblScannerSelected.Text = open.FileNames.Length.ToString() + ": Scanned Images Selected";
+                // display image in picture box  
+
+                // image file path  
+                // textBox1.Text = open.FileName;
+            }
+        }
+
+        private void Customer_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(41, 44, 51), ButtonBorderStyle.Solid);
+
         }
     }
 }

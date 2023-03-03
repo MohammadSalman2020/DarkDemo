@@ -56,6 +56,23 @@
           <Property Name="CusSSn" Type="nvarchar" MaxLength="200" />
           <Property Name="IsBad" Type="bit" />
         </EntityType>
+        <EntityType Name="tblScannerImages">
+          <Key>
+            <PropertyRef Name="ScanID" />
+          </Key>
+          <Property Name="ScanID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerID" Type="int" />
+          <Property Name="MainScanImage" Type="image" />
+        </EntityType>
+        <EntityType Name="tblUser">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserNAme" Type="nvarchar" MaxLength="100" />
+          <Property Name="Password_" Type="nvarchar" MaxLength="100" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" />
+        </EntityType>
         <Association Name="FK__tblCustom__Custo__1273C1CD">
           <End Role="tblCustomerInfo" Type="Self.tblCustomerInfo" Multiplicity="1" />
           <End Role="tblCustomerCheck" Type="Self.tblCustomerCheck" Multiplicity="*" />
@@ -65,6 +82,18 @@
             </Principal>
             <Dependent Role="tblCustomerCheck">
               <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblScanne__Custo__36B12243">
+          <End Role="tblCustomerInfo" Type="Self.tblCustomerInfo" Multiplicity="0..1" />
+          <End Role="tblScannerImages" Type="Self.tblScannerImages" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblCustomerInfo">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="tblScannerImages">
+              <PropertyRef Name="CustomerID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -104,9 +133,15 @@
           <EntitySet Name="tblCameraImages" EntityType="Self.tblCameraImages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblCustomerCheck" EntityType="Self.tblCustomerCheck" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblCustomerInfo" EntityType="Self.tblCustomerInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblScannerImages" EntityType="Self.tblScannerImages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblUser" EntityType="Self.tblUser" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__tblCustom__Custo__1273C1CD" Association="Self.FK__tblCustom__Custo__1273C1CD">
             <End Role="tblCustomerInfo" EntitySet="tblCustomerInfo" />
             <End Role="tblCustomerCheck" EntitySet="tblCustomerCheck" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblScanne__Custo__36B12243" Association="Self.FK__tblScanne__Custo__36B12243">
+            <End Role="tblCustomerInfo" EntitySet="tblCustomerInfo" />
+            <End Role="tblScannerImages" EntitySet="tblScannerImages" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -158,6 +193,7 @@
           <NavigationProperty Name="tblCustomerChecks" Relationship="Self.FK__tblCustom__Custo__1273C1CD" FromRole="tblCustomerInfo" ToRole="tblCustomerCheck" />
           <NavigationProperty Name="tblCameraImages" Relationship="DBLiquiorShopModel.FK__tblCamera__Custo__29572725" FromRole="tblCustomerInfo" ToRole="tblCameraImage" />
           <Property Name="IsBad" Type="Boolean" />
+          <NavigationProperty Name="tblScannerImages" Relationship="DBLiquiorShopModel.FK__tblScanne__Custo__36B12243" FromRole="tblCustomerInfo" ToRole="tblScannerImage" />
         </EntityType>
         <Association Name="FK__tblCustom__Custo__1273C1CD">
           <End Role="tblCustomerInfo" Type="Self.tblCustomerInfo" Multiplicity="1" />
@@ -214,6 +250,12 @@
             <End Role="tblCustomerInfo" EntitySet="tblCustomerInfoes" />
             <End Role="tblCameraImage" EntitySet="tblCameraImages" />
           </AssociationSet>
+          <EntitySet Name="tblScannerImages" EntityType="DBLiquiorShopModel.tblScannerImage" />
+          <AssociationSet Name="FK__tblScanne__Custo__36B12243" Association="DBLiquiorShopModel.FK__tblScanne__Custo__36B12243">
+            <End Role="tblCustomerInfo" EntitySet="tblCustomerInfoes" />
+            <End Role="tblScannerImage" EntitySet="tblScannerImages" />
+          </AssociationSet>
+          <EntitySet Name="tblUsers" EntityType="DBLiquiorShopModel.tblUser" />
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -247,6 +289,36 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="tblScannerImage">
+          <Key>
+            <PropertyRef Name="ScanID" />
+          </Key>
+          <Property Name="ScanID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerID" Type="Int32" />
+          <Property Name="MainScanImage" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="tblCustomerInfo" Relationship="DBLiquiorShopModel.FK__tblScanne__Custo__36B12243" FromRole="tblScannerImage" ToRole="tblCustomerInfo" />
+        </EntityType>
+        <Association Name="FK__tblScanne__Custo__36B12243">
+          <End Type="DBLiquiorShopModel.tblCustomerInfo" Role="tblCustomerInfo" Multiplicity="0..1" />
+          <End Type="DBLiquiorShopModel.tblScannerImage" Role="tblScannerImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblCustomerInfo">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="tblScannerImage">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tblUser">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserNAme" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Password_" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -329,6 +401,25 @@
                 <ScalarProperty Name="MainImage" ColumnName="MainImage" />
                 <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
                 <ScalarProperty Name="ImageID" ColumnName="ImageID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblScannerImages">
+            <EntityTypeMapping TypeName="DBLiquiorShopModel.tblScannerImage">
+              <MappingFragment StoreEntitySet="tblScannerImages">
+                <ScalarProperty Name="MainScanImage" ColumnName="MainScanImage" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ScanID" ColumnName="ScanID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblUsers">
+            <EntityTypeMapping TypeName="DBLiquiorShopModel.tblUser">
+              <MappingFragment StoreEntitySet="tblUser">
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password_" ColumnName="Password_" />
+                <ScalarProperty Name="UserNAme" ColumnName="UserNAme" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -17,33 +17,75 @@ namespace DarkDemo
         {
             InitializeComponent();
         }
-
+        int x = 0;
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            drpcus2.Visible = true;
-            lblCusName.Visible = true;
+
+
         }
+
+        public void checkData()
+        {
+            try
+            {
+                int CustomerID = int.Parse(drpcus2.SelectedValue.ToString());
+                dataGridView1.DataSource = (from a in db.tblCustomerChecks
+                                            join b in db.tblCustomerInfoes
+                                            on a.CustomerId equals b.CustomerID
+                                            select new
+                                            {
+                                                CheckID = a.CheckID,
+                                                CustomerID = a.CustomerId,
+                                                FirstName = b.CusFirstname,
+                                                CompanyName = a.CompanyName,
+                                                Amount = a.CheckAmount,
+                                                FeePercentage = a.FeePercentage,
+                                                FeeAmount = a.FeeAmount,
+                                                NetAmount = a.NetAmount,
+                                                CashedBy = a.CashedBy,
+                                                Date = a.CashedDate,
+
+
+                                            }).Where(p => p.CustomerID == CustomerID).OrderByDescending(p => p.CheckID).ToList().ToList();
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+
         public void LoadData()
         {
-            dataGridView1.DataSource = (from a in db.tblCustomerChecks
-                                        join b in db.tblCustomerInfoes
-                                        on a.CustomerId equals b.CustomerID
-                                        select new
-                                        {
-                                            CheckID=a.CheckID,
-                                            CustomerID = a.CustomerId,
-                                            FirstName = b.CusFirstname,
-                                            CompanyName = a.CompanyName,
-                                            Amount = a.CheckAmount,
-                                            FeePercentage = a.FeePercentage,
-                                            FeeAmount = a.FeeAmount,
-                                            NetAmount = a.NetAmount,
-                                            CashedBy = a.CashedBy,
-                                            Date = a.CashedDate,
+            try
+            {
+
+                dataGridView1.DataSource = (from a in db.tblCustomerChecks
+                                            join b in db.tblCustomerInfoes
+                                            on a.CustomerId equals b.CustomerID
+                                            select new
+                                            {
+                                                CheckID = a.CheckID,
+                                                CustomerID = a.CustomerId,
+                                                FirstName = b.CusFirstname,
+                                                CompanyName = a.CompanyName,
+                                                Amount = a.CheckAmount,
+                                                FeePercentage = a.FeePercentage,
+                                                FeeAmount = a.FeeAmount,
+                                                NetAmount = a.NetAmount,
+                                                CashedBy = a.CashedBy,
+                                                Date = a.CashedDate,
 
 
-                                        }).OrderByDescending(p => p.CheckID).ToList().ToList();
-            //dataGridView1.DataSource = db.tblCustomerInfoes.OrderByDescending(p => p.CustomerID).ToList();
+                                            }).OrderByDescending(p => p.CheckID).ToList().ToList();
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+
         }
         private void ChequeDetail_Load(object sender, EventArgs e)
         {
@@ -51,7 +93,6 @@ namespace DarkDemo
             lblCusName.Visible = false;
             FillDrp();
             LoadData();
-
         }
         DBLiquiorShopEntities db = new DBLiquiorShopEntities();
         public void FillDrp()
@@ -62,7 +103,21 @@ namespace DarkDemo
             DrpCustomer.ValueMember = "CustomerID";
             DrpCustomer.DisplayMember = "CusFirstname";
 
+
+
         }
+
+        public void FillDrp2()
+        {
+            var rec = (from a in db.tblCustomerInfoes
+                       select new { a.CustomerID, a.CusFirstname }).ToList();
+            drpcus2.DataSource = rec;
+            drpcus2.ValueMember = "CustomerID";
+            drpcus2.DisplayMember = "CusFirstname";
+
+        }
+
+
         private void pictureBox3_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -104,15 +159,17 @@ namespace DarkDemo
             {
                 int ID = int.Parse(DrpCustomer.SelectedValue.ToString());
                 //int ID = 5;
-                int xx = 14;
-                int yy = 9;
-                int zz = 116;
+               
 
                 panel2.Controls.Clear();
+                panel4.Controls.Clear();
                 var rec = db.tblCameraImages.Where(p => p.CustomerID == ID).ToList();
 
                 if (rec.Count > 0)
                 {
+                    int xx = 14;
+                    int yy = 9;
+                    int zz = 116;
                     int i = 0;
 
                     for (int y = 0; y < rec.Count; y++)
@@ -149,12 +206,50 @@ namespace DarkDemo
                     pictureBox1.Image = DarkDemo.Properties.Resources.scanner;
                 }
 
+                var rec3 = db.tblScannerImages.Where(p => p.CustomerID == ID).ToList();
+
+                if(rec3.Count>0)
+                {
+                    int xx = 14;
+                    int yy = 9;
+                    int zz = 116;
+                    int i = 0;
+
+                    for (int y = 0; y < rec3.Count; y++)
+                    {
+                        i++;
+                        var button = new Button();
+                        button.Tag = rec3[y].ScanID;
+                        button.AutoSize = false;
+                        button.Size = new Size(114, 44);
+
+                        if (y != 0)
+                        {
+                            xx = xx + zz;
+                        }
+
+                        button.Location = new Point(xx, yy);
+                        button.Font = new Font(button.Font, FontStyle.Bold);
+                        button.Text = "Image :" + i;
+                        button.ForeColor = Color.Black;
+                        button.BackColor = Color.White;
+                        button.Click += new System.EventHandler(this.btnButton_Click2);
+                        // labelName4.TextAlign = ContentAlignment.TopCenter;
+                        //labelName.Parent = picture;
+
+
+                        panel4.Controls.Add(button);
+
+                    }
+                }
+
+
             }
             catch (Exception ex)
             {
 
             }
-         
+
 
         }
         public Image ByteArrayToImage(byte[] data)
@@ -163,6 +258,17 @@ namespace DarkDemo
             Image returnImage = Image.FromStream(ms);
             return returnImage;
         }
+        void btnButton_Click2(object sender, EventArgs e)
+        {
+            Button triggeredButton = (Button)sender;
+            int ImageID = int.Parse(triggeredButton.Tag.ToString());
+            var rec = db.tblScannerImages.Where(p => p.ScanID == ImageID).FirstOrDefault();
+            pictureBox2.Image = ByteArrayToImage(rec.MainScanImage);
+
+
+
+        }
+
         void btnButton_Click(object sender, EventArgs e)
         {
             Button triggeredButton = (Button)sender;
@@ -227,14 +333,16 @@ namespace DarkDemo
         {
             try
             {
+
+
                 double FeePer = double.Parse(txtFee.Text);
                 double Amount = int.Parse(txtAmount.Text);
 
-                double Per1 = (FeePer / Amount);
-                double Per2 = Per1 * 100;
+                double Per1 = (FeePer * Amount)/100;
+                
 
 
-                double subtotal = Per2 * Amount;
+                double subtotal = Per1;
 
                 double total = Amount + subtotal;
 
@@ -269,6 +377,37 @@ namespace DarkDemo
                 //    Myrow.DefaultCellStyle.BackColor = Color.Green;
                 //}
             }
+        }
+
+        private void drpcus2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            checkData();
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (drpcus2.Visible == false)
+            {
+                drpcus2.Visible = true;
+                lblCusName.Visible = true;
+                x = 1;
+                FillDrp2();
+
+                checkData();
+            }
+            else if (drpcus2.Visible == true)
+            {
+                drpcus2.Visible = false;
+                lblCusName.Visible = false;
+                x = 0;
+                LoadData();
+            }
+        }
+
+        private void ChequeDetail_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(41, 44, 51), ButtonBorderStyle.Solid);
+
         }
     }
 }

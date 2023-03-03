@@ -11,6 +11,9 @@
         <AssociationConnector Association="DBLiquiorShopModel.FK__tblCustom__Custo__1273C1CD" ManuallyRouted="false" />
         <EntityTypeShape EntityType="DBLiquiorShopModel.tblCameraImage" Width="1.5" PointX="3" PointY="6" />
         <AssociationConnector Association="DBLiquiorShopModel.FK__tblCamera__Custo__29572725" />
+        <EntityTypeShape EntityType="DBLiquiorShopModel.tblScannerImage" Width="1.5" PointX="3" PointY="9.25" />
+        <AssociationConnector Association="DBLiquiorShopModel.FK__tblScanne__Custo__36B12243" />
+        <EntityTypeShape EntityType="DBLiquiorShopModel.tblUser" Width="1.5" PointX="5.375" PointY="3.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
