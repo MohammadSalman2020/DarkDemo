@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -16,22 +17,79 @@ namespace DarkDemo
         public Customer()
         {
             InitializeComponent();
+            Camera = new Thread(CheckCameraImages);
+            Scanner = new Thread(CheckScannerImages);
+
+
+            Camera.Start();
+            Scanner.Start();
+
         }
+        Thread Camera;
+        Thread Scanner;
+        public void CheckCameraImages()
+        {
+            while (true)
+            {
+                if (IsCameraImageAvailable)
+                {
+
+                    pictureBox2.Image = CameraForm.ImagesFromCameraForm[0];
+
+                    lblPictureSelected.Invoke(new Action(ChangeLabelCamera));
+                    // pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+                    IsCameraImageAvailable = false;
+
+
+                }
+            }
+
+        }
+        public void ChangeLabelCamera()
+        {
+            lblPictureSelected.Text = CameraForm.ImagesFromCameraForm.Count.ToString() + ": Pictures Selected";
+
+        }
+        public void CheckScannerImages()
+        {
+            while (true)
+            {
+                if (IsScannerImageAvailable)
+                {
+
+                    pictureBox1.Image = ScannerForm.ScannerFormImages[0];
+                    lblScannerSelected.Invoke(new Action(ChangeLabelScanner));
+                    //   lblScannerSelected.Text = ScannerForm.ScannerFormImages.Count.ToString() + ": Pictures Selected";
+                    // pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+                    IsScannerImageAvailable = false;
+
+
+                }
+            }
+
+        }
+        public void ChangeLabelScanner()
+        {
+            lblScannerSelected.Text = ScannerForm.ScannerFormImages.Count.ToString() + ": Pictures Selected";
+
+        }
+        //  public static bool CameraStatusChange = false;   IsScannerImageAvailable
 
         private void Customer_Load(object sender, EventArgs e)
         {
-            
-            txtDate.Format = DateTimePickerFormat.Custom;
-            txtDate.CustomFormat = "MM/dd/yyyy hh:mm:ss";
+
 
             LoadData();
 
         }
         public void LoadData()
         {
+
             dataGridView1.DataSource = (from a in db.tblCustomerInfoes
+
                                         select new
                                         {
+
                                             CustomerID = a.CustomerID,
                                             FirstName = a.CusFirstname,
                                             MiddleName = a.CusMiddlename,
@@ -45,27 +103,40 @@ namespace DarkDemo
                                             CellPhoneNo = a.CusCellPhone,
                                             WorkPhone = a.CusWorkPhone,
                                             SSN = a.CusSSn,
-                                            BadCustomer = a.IsBad
+                                            BadCustomer = a.IsBad == true ? "Yes" : "No"
 
                                         }).OrderByDescending(p => p.CustomerID).ToList().ToList();
+
+            dataGridView1.Columns[0].HeaderText = "Customer ID";
+            dataGridView1.Columns[1].HeaderText = "First Name";
+            dataGridView1.Columns[2].HeaderText = "Middle Name";
+            dataGridView1.Columns[3].HeaderText = "Last Name";
+            dataGridView1.Columns[4].HeaderText = "Address";
+            dataGridView1.Columns[5].HeaderText = "City";
+            dataGridView1.Columns[6].HeaderText = "State";
+            dataGridView1.Columns[7].HeaderText = "Zip Code";
+            dataGridView1.Columns[8].HeaderText = "Driver License #";
+            dataGridView1.Columns[9].HeaderText = "DOB";
+            dataGridView1.Columns[10].HeaderText = "Phone #";
+            dataGridView1.Columns[11].HeaderText = "Work Phone #";
+            dataGridView1.Columns[12].HeaderText = "SSN";
+            dataGridView1.Columns[13].HeaderText = "Bad Customer";
             //dataGridView1.DataSource = db.tblCustomerInfoes.OrderByDescending(p => p.CustomerID).ToList();
         }
         private void button4_Click(object sender, EventArgs e)
         {
-         
-            ChequeDetail obj = new ChequeDetail();
+            clear();
+            ID = 0;
+            CheckDetails obj = new CheckDetails();
             obj.ShowDialog();
         }
         DBLiquiorShopEntities db = new DBLiquiorShopEntities();
 
         public bool IsEmpty()
         {
-            if (txtCity.Text.Trim() == string.Empty || txtDate.Text.Trim() == string.Empty || txtFirstName.Text.Trim() == string.Empty || txtLastName.Text.Trim() == string.Empty ||
-                txtLicense.Text.Trim() == string.Empty || txtPhone.Text.Trim() == string.Empty
-                || txtSSN.Text.Trim() == string.Empty || txtState.Text.Trim() == string.Empty || txtMiddle.Text.Trim() == string.Empty
-                || txtAddress.Text.Trim() == string.Empty
-                || txtZipCode.Text.Trim() == string.Empty
-                || txtWorkPhone.Text.Trim() == string.Empty)
+            if (txtFirstName.Text.Trim() == string.Empty || txtLastName.Text.Trim() == string.Empty ||
+                txtLicense.Text.Trim() == string.Empty
+                || txtSSN.Text.Trim() == string.Empty)
             {
                 return true;
             }
@@ -88,27 +159,32 @@ namespace DarkDemo
             txtMiddle.Text = string.Empty;
             txtZipCode.Text = string.Empty;
             txtWorkPhone.Text = string.Empty;
-
+            lblScannerSelected.Text = "0 Scanned Images Selected ";
+            lblPictureSelected.Text = "0 Camera Images Selected ";
             pictureBox2.Image = DarkDemo.Properties.Resources.photo_camera;
             pictureBox1.Image = DarkDemo.Properties.Resources.scanner;
-
+            pictureBox2.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+            CameraForm.ImagesFromCameraForm = null;
+            ScannerForm.ScannerFormImages = null;
         }
         private void button1_Click(object sender, EventArgs e)
         {
-           
+
             if (!IsEmpty())
             {
                 string Tag = lblTag.Tag.ToString();
-                if (CameraImages.Count > 0 && ScannerImages.Count > 0)
+
+
+
+                if (Tag == "Add")
                 {
-                  
-
-                    if (Tag == "Add")
+                    if (CameraForm.ImagesFromCameraForm.Count > 0
+            && ScannerForm.ScannerFormImages.Count > 0)
                     {
-
                         tblCustomerInfo obj = new tblCustomerInfo();
                         obj.CusSSn = txtSSN.Text;
-                        obj.CusDOB = Convert.ToDateTime(txtDate.Text);
+                        obj.CusDOB = txtDate.Text;
                         obj.CusCity = txtCity.Text;
                         obj.Cuslastname = txtLastName.Text;
                         obj.CusDriverLicense = txtLicense.Text;
@@ -124,7 +200,7 @@ namespace DarkDemo
 
                         int CusID = db.tblCustomerInfoes.Max(p => p.CustomerID);
 
-                        foreach (var item in CameraImages)
+                        foreach (var item in CameraForm.ImagesFromCameraForm)
                         {
                             tblCameraImage obj2 = new tblCameraImage();
                             obj2.MainImage = ImageToByteArray(item);
@@ -134,7 +210,7 @@ namespace DarkDemo
                             db.SaveChanges();
                         }
 
-                        foreach (var item in ScannerImages)
+                        foreach (var item in ScannerForm.ScannerFormImages)
                         {
                             tblScannerImage obj3 = new tblScannerImage();
                             obj3.MainScanImage = ImageToByteArray(item);
@@ -150,7 +226,13 @@ namespace DarkDemo
                         clear();
                         LoadData();
                     }
+                    else
+                    {
+                        MessageBox.Show("Please Add Images");
+                    }
+
                 }
+
                 else if (Tag == "Update")
                 {
                     if (ID != 0)
@@ -159,7 +241,7 @@ namespace DarkDemo
 
                         rec.CusAddress = txtAddress.Text;
                         rec.CusCity = txtCity.Text;
-                        rec.CusDOB = Convert.ToDateTime(txtDate.Text);
+                        rec.CusDOB = txtDate.Text;
                         rec.CusFirstname = txtFirstName.Text;
                         rec.Cuslastname = txtLastName.Text;
                         rec.CusDriverLicense = txtLicense.Text;
@@ -250,17 +332,7 @@ namespace DarkDemo
 
         private void txtLicense_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
-        (e.KeyChar != '.'))
-            {
-                e.Handled = true;
-            }
 
-            // only allow one decimal point
-            if ((e.KeyChar == '.') && ((sender as TextBox).Text.IndexOf('.') > -1))
-            {
-                e.Handled = true;
-            }
         }
         public Image ByteArrayToImage(byte[] data)
         {
@@ -277,49 +349,36 @@ namespace DarkDemo
         public static List<Bitmap> CameraImages = new List<Bitmap>();
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-            // open file dialog   
-            OpenFileDialog open = new OpenFileDialog();
-            // image filters  
-            open.Multiselect = true;
 
-            open.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp";
-            if (open.ShowDialog() == DialogResult.OK)
-            {
-                foreach (var item in open.FileNames)
-                {
-                    CameraImages.Add(
-                       new Bitmap(item));
-
-                    pictureBox2.Image = new Bitmap(open.FileName);
-                }
-                lblPictureSelected.Text = open.FileNames.Length.ToString() + ": Pictures Selected";
-                // display image in picture box  
-
-                // image file path  
-                // textBox1.Text = open.FileName;
-            }
         }
 
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            string value = dataGridView1.SelectedRows[0].Cells[0].Value.ToString();
-            ID = int.Parse(value);
-            if (ID != 0)
+            try
             {
-                var rec = db.tblCustomerInfoes.Where(p => p.CustomerID == ID).FirstOrDefault();
-                txtAddress.Text = rec.CusAddress;
-                txtCity.Text = rec.CusCity;
-                txtDate.Text = rec.CusDOB.ToString();
-                txtFirstName.Text = rec.CusFirstname;
-                txtLastName.Text = rec.Cuslastname;
-                txtLicense.Text = rec.CusDriverLicense;
-                txtMiddle.Text = rec.CusMiddlename;
-                txtPhone.Text = rec.CusCellPhone;
-                txtSSN.Text = rec.CusSSn;
-                txtState.Text = rec.CusState;
-                txtWorkPhone.Text = rec.CusWorkPhone;
-                txtZipCode.Text = rec.CusZipCode.ToString();
-                lblTag.Tag = "Update";
+                string value = dataGridView1.SelectedRows[0].Cells[0].Value.ToString();
+                ID = int.Parse(value);
+                if (ID != 0)
+                {
+                    var rec = db.tblCustomerInfoes.Where(p => p.CustomerID == ID).FirstOrDefault();
+                    txtAddress.Text = rec.CusAddress;
+                    txtCity.Text = rec.CusCity;
+                    txtDate.Text = rec.CusDOB.ToString();
+                    txtFirstName.Text = rec.CusFirstname;
+                    txtLastName.Text = rec.Cuslastname;
+                    txtLicense.Text = rec.CusDriverLicense;
+                    txtMiddle.Text = rec.CusMiddlename;
+                    txtPhone.Text = rec.CusCellPhone;
+                    txtSSN.Text = rec.CusSSn;
+                    txtState.Text = rec.CusState;
+                    txtWorkPhone.Text = rec.CusWorkPhone;
+                    txtZipCode.Text = rec.CusZipCode.ToString();
+                    lblTag.Tag = "Update";
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
 
         }
@@ -362,7 +421,7 @@ namespace DarkDemo
         {
             foreach (DataGridViewRow Myrow in dataGridView1.Rows)
             {            //Here 2 cell is target value and 1 cell is Volume
-                if (Convert.ToBoolean(Myrow.Cells[13].Value) == true)// Or your condition 
+                if (Myrow.Cells[13].Value.ToString() == "Yes")// Or your condition 
                 {
                     Myrow.DefaultCellStyle.BackColor = Color.Red;
                 }
@@ -378,6 +437,28 @@ namespace DarkDemo
             if (ID != 0)
             {
                 string CusName = "";
+
+                var DeleteSCANImages = db.tblScannerImages.Where(p => p.CustomerID == ID).ToList();
+                foreach (var item in DeleteSCANImages)
+                {
+                    db.tblScannerImages.Remove(item);
+                    db.SaveChanges();
+                }
+                var DeleteImages = db.tblCameraImages.Where(p => p.CustomerID == ID).ToList();
+                foreach (var item in DeleteImages)
+                {
+                    db.tblCameraImages.Remove(item);
+                    db.SaveChanges();
+                }
+
+                var DeleteCheck = db.tblCustomerChecks.Where(p => p.CustomerId == ID).ToList();
+                foreach (var item in DeleteCheck)
+                {
+                    db.tblCustomerChecks.Remove(item);
+                    db.SaveChanges();
+                }
+
+
                 var rec = db.tblCustomerInfoes.Where(a => a.CustomerID == ID).FirstOrDefault();
                 CusName = rec.CusFirstname + "-" + rec.Cuslastname;
                 db.tblCustomerInfoes.Remove(rec);
@@ -396,33 +477,84 @@ namespace DarkDemo
         public static List<Bitmap> ScannerImages = new List<Bitmap>();
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            // open file dialog   
-            OpenFileDialog open = new OpenFileDialog();
-            // image filters  
-            open.Multiselect = true;
+            //// open file dialog   
+            //OpenFileDialog open = new OpenFileDialog();
+            //// image filters  
+            //open.Multiselect = true;
 
-            open.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp";
-            if (open.ShowDialog() == DialogResult.OK)
-            {
-                foreach (var item in open.FileNames)
-                {
-                    ScannerImages.Add(
-                       new Bitmap(item));
+            //open.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp ;*.tiff";
+            //if (open.ShowDialog() == DialogResult.OK)
+            //{
+            //    foreach (var item in open.FileNames)
+            //    {
+            //        ScannerImages.Add(
+            //           new Bitmap(item));
 
-                    pictureBox1.Image = new Bitmap(open.FileName);
-                }
-                lblScannerSelected.Text = open.FileNames.Length.ToString() + ": Scanned Images Selected";
-                // display image in picture box  
+            //        pictureBox1.Image = new Bitmap(open.FileName);
+            //    }
+            //    lblScannerSelected.Text = open.FileNames.Length.ToString() + ": Scanned Images Selected";
+            //    // display image in picture box  
 
-                // image file path  
-                // textBox1.Text = open.FileName;
-            }
+            //    // image file path  
+            //    // textBox1.Text = open.FileName;
+            //}
         }
 
         private void Customer_Paint(object sender, PaintEventArgs e)
         {
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(41, 44, 51), ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(249, 173, 45), ButtonBorderStyle.Solid);
 
         }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            ScannerForm.ScannerFormImages = null;
+            pictureBox1.Image = DarkDemo.Properties.Resources.scanner;
+
+            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+            ScannerForm obj = new ScannerForm();
+            obj.ShowDialog();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            CameraForm.ImagesFromCameraForm = null;
+            pictureBox2.SizeMode = PictureBoxSizeMode.CenterImage;
+
+            pictureBox2.Image = DarkDemo.Properties.Resources.photo_camera;
+            CameraForm obj = new CameraForm();
+            obj.ShowDialog();
+        }
+
+        public static int CusID_ForInvoice = 0;
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (ID != 0)
+            {
+                clear();
+
+                CusID_ForInvoice = ID;
+                Invoice frm = new Invoice();
+                ID = 0;
+                frm.ShowDialog();
+            }
+            else
+
+            {
+                MessageBox.Show("Please select a customer from Data first");
+            }
+
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            clear();
+            ID = 0;
+            Check obj = new Check();
+            obj.ShowDialog();
+        }
+        public static bool IsCameraImageAvailable = false;
+        public static bool IsScannerImageAvailable = false;
+
     }
 }

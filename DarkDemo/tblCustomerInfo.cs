@@ -30,7 +30,7 @@ namespace DarkDemo
         public string CusState { get; set; }
         public Nullable<int> CusZipCode { get; set; }
         public string CusDriverLicense { get; set; }
-        public Nullable<System.DateTime> CusDOB { get; set; }
+        public string CusDOB { get; set; }
         public string CusCellPhone { get; set; }
         public string CusWorkPhone { get; set; }
         public string CusSSn { get; set; }

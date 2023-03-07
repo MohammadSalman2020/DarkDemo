@@ -8,9 +8,26 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DarkDemo</RootNamespace>
-    <AssemblyName>DarkDemo</AssemblyName>
+    <AssemblyName>Liquior Shop</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>D:\codeinpc.comDarkDashboardDemo\setup\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,11 +49,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>free-30-instagram-stories-icons73_122620.ico</ApplicationIcon>
+    <ApplicationIcon>Company Logo.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>E7DB683031305E528A583478D42F1F46AD1CA88B</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>DarkDemo_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.WIA">
+      <HintPath>..\..\..\AutoScan\AutoScan\bin\Debug\Interop.WIA.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -63,17 +96,17 @@
     <Compile Include="CameraForm.Designer.cs">
       <DependentUpon>CameraForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Checque.cs">
+    <Compile Include="Check.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Checque.Designer.cs">
-      <DependentUpon>Checque.cs</DependentUpon>
+    <Compile Include="Check.Designer.cs">
+      <DependentUpon>Check.cs</DependentUpon>
     </Compile>
-    <Compile Include="ChequeDetail.cs">
+    <Compile Include="CheckDetails.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChequeDetail.Designer.cs">
-      <DependentUpon>ChequeDetail.cs</DependentUpon>
+    <Compile Include="CheckDetails.Designer.cs">
+      <DependentUpon>CheckDetails.cs</DependentUpon>
     </Compile>
     <Compile Include="Customer.cs">
       <SubType>Form</SubType>
@@ -114,6 +147,14 @@
     <Compile Include="FrmUsers.Designer.cs">
       <DependentUpon>FrmUsers.cs</DependentUpon>
     </Compile>
+    <Compile Include="Invoice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Invoice.Designer.cs">
+      <DependentUpon>Invoice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IOptionService.cs" />
+    <Compile Include="OptionService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScannerForm.cs">
@@ -150,11 +191,11 @@
     <EmbeddedResource Include="CameraForm.resx">
       <DependentUpon>CameraForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Checque.resx">
-      <DependentUpon>Checque.cs</DependentUpon>
+    <EmbeddedResource Include="Check.resx">
+      <DependentUpon>Check.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ChequeDetail.resx">
-      <DependentUpon>ChequeDetail.cs</DependentUpon>
+    <EmbeddedResource Include="CheckDetails.resx">
+      <DependentUpon>CheckDetails.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Customer.resx">
       <DependentUpon>Customer.cs</DependentUpon>
@@ -167,6 +208,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmUsers.resx">
       <DependentUpon>FrmUsers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Invoice.resx">
+      <DependentUpon>Invoice.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -185,6 +229,7 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DbLiquior.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="DarkDemo_TemporaryKey.pfx" />
     <None Include="DbLiquior.edmx.diagram">
       <DependentUpon>DbLiquior.edmx</DependentUpon>
     </None>
@@ -233,6 +278,7 @@
     <None Include="Resources\photo-camera.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Company Logo.ico" />
     <Content Include="DbLiquior.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DbLiquior.Context.cs</LastGenOutput>
@@ -243,7 +289,24 @@
       <DependentUpon>DbLiquior.edmx</DependentUpon>
       <LastGenOutput>DbLiquior.cs</LastGenOutput>
     </Content>
+    <Content Include="DBLiquiorShop.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DBLiquiorShop_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>DBLiquiorShop.mdf</DependentUpon>
+    </Content>
     <Content Include="free-30-instagram-stories-icons73_122620.ico" />
+    <None Include="Resources\logout.png" />
+    <None Include="Resources\profile.png" />
+    <None Include="Resources\cheque.png" />
+    <None Include="Resources\businessman %285%29.png" />
+    <None Include="Resources\businessman %284%29.png" />
+    <None Include="Resources\businessman %283%29.png" />
+    <None Include="Resources\businessman %282%29.png" />
+    <None Include="Resources\businessman %281%29.png" />
+    <None Include="Resources\businessman.png" />
+    <None Include="Resources\Company Logo.png" />
     <None Include="Resources\icons8-logs-64.png" />
     <None Include="Resources\icons8-logout-rounded-64.png" />
     <None Include="Resources\icons8-bad-decision-100.png" />
@@ -264,6 +327,23 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.SqlServer.SqlLocalDB.13.2">
+      <Visible>False</Visible>
+      <ProductName>SQL Server 2016 Express LocalDB</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

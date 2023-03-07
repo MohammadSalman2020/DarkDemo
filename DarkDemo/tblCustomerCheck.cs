@@ -23,6 +23,7 @@ namespace DarkDemo
         public Nullable<double> NetAmount { get; set; }
         public Nullable<System.DateTime> CashedDate { get; set; }
         public string CashedBy { get; set; }
+        public string CheckNo { get; set; }
     
         public virtual tblCustomerInfo tblCustomerInfo { get; set; }
     }

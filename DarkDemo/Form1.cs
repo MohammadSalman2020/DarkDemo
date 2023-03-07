@@ -149,7 +149,7 @@ namespace DarkDemo
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Checque frm = new Checque();
+            Check frm = new Check();
             frm.ShowDialog();
         }
 

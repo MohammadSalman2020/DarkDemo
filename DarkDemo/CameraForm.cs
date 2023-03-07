@@ -16,7 +16,7 @@ namespace DarkDemo
     {
         //VideoCapture capture;
         //Mat frame;
-       
+
         public CameraForm()
         {
             InitializeComponent();
@@ -26,6 +26,8 @@ namespace DarkDemo
         {
             webcam = new WebCam_PictureBox();
             webcam.InitializeWebCam(ref pictureBox1);
+            ImagesFromCameraForm = new List<Bitmap>();
+            webcam.Start();
         }
         public static void SaveImageCapture(System.Drawing.Image image)
         {
@@ -45,7 +47,7 @@ namespace DarkDemo
             }
         }
 
-   
+
         private void pictureBox3_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -55,10 +57,15 @@ namespace DarkDemo
         {
             webcam.Start();
         }
+        public static List<Bitmap> ImagesFromCameraForm = new List<Bitmap>();
+
 
         private void btnCapture_Click(object sender, EventArgs e)
         {
             pictureBox2.Image = pictureBox1.Image;
+
+            ImagesFromCameraForm.Add(new Bitmap(pictureBox2.Image));
+            lblTotalImages.Text = ImagesFromCameraForm.Count.ToString();
         }
 
         private void btnStop_Click(object sender, EventArgs e)
@@ -88,7 +95,18 @@ namespace DarkDemo
 
         private void CameraForm_Paint(object sender, PaintEventArgs e)
         {
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(41, 44, 51), ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(249, 173, 45), ButtonBorderStyle.Solid);
+
+        }
+
+        private void CameraForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            webcam.Stop();
+            if (ImagesFromCameraForm.Count > 0)
+            {
+                Customer.IsCameraImageAvailable = true;
+               
+            }
 
         }
     }

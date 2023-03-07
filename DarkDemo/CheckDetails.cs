@@ -11,9 +11,9 @@ using System.Windows.Forms;
 
 namespace DarkDemo
 {
-    public partial class ChequeDetail : Form
+    public partial class CheckDetails : Form
     {
-        public ChequeDetail()
+        public CheckDetails()
         {
             InitializeComponent();
         }
@@ -36,6 +36,7 @@ namespace DarkDemo
                                             {
                                                 CheckID = a.CheckID,
                                                 CustomerID = a.CustomerId,
+                                                a.CheckNo,
                                                 FirstName = b.CusFirstname,
                                                 CompanyName = a.CompanyName,
                                                 Amount = a.CheckAmount,
@@ -46,7 +47,20 @@ namespace DarkDemo
                                                 Date = a.CashedDate,
 
 
-                                            }).Where(p => p.CustomerID == CustomerID).OrderByDescending(p => p.CheckID).ToList().ToList();
+                                            }).Where(p => p.CustomerID == CustomerID).OrderByDescending(p => p.CheckID).ToList();
+            
+
+                dataGridView1.Columns[0].HeaderText = "Check ID";
+                dataGridView1.Columns[1].HeaderText = "Customer #";
+                dataGridView1.Columns[2].HeaderText = "Check #";
+                dataGridView1.Columns[3].HeaderText = "Company Name";
+                dataGridView1.Columns[4].HeaderText = "Last Name";
+                dataGridView1.Columns[5].HeaderText = "Check Amount";
+                dataGridView1.Columns[6].HeaderText = "Fee %";
+                dataGridView1.Columns[7].HeaderText = "Fee Amount";
+                dataGridView1.Columns[8].HeaderText = "Net Amount";
+                dataGridView1.Columns[9].HeaderText = "Cashier";
+                dataGridView1.Columns[10].HeaderText = "Cashed Date";
             }
             catch (Exception ex)
             {
@@ -67,6 +81,7 @@ namespace DarkDemo
                                             {
                                                 CheckID = a.CheckID,
                                                 CustomerID = a.CustomerId,
+                                                a.CheckNo,
                                                 FirstName = b.CusFirstname,
                                                 CompanyName = a.CompanyName,
                                                 Amount = a.CheckAmount,
@@ -77,14 +92,25 @@ namespace DarkDemo
                                                 Date = a.CashedDate,
 
 
-                                            }).OrderByDescending(p => p.CheckID).ToList().ToList();
-
+                                            }).OrderByDescending(p => p.CheckID).ToList();
+                dataGridView1.Columns[0].HeaderText = "Check ID";
+                dataGridView1.Columns[1].HeaderText = "Customer #";
+                dataGridView1.Columns[2].HeaderText = "Check #";
+                dataGridView1.Columns[3].HeaderText = "Company Name";
+                dataGridView1.Columns[4].HeaderText = "Last Name";
+                dataGridView1.Columns[5].HeaderText = "Check Amount";
+                dataGridView1.Columns[6].HeaderText = "Fee %";
+                dataGridView1.Columns[7].HeaderText = "Fee Amount";
+                dataGridView1.Columns[8].HeaderText = "Net Amount";
+                dataGridView1.Columns[9].HeaderText = "Cashier";
+                dataGridView1.Columns[10].HeaderText = "Cashed Date";
             }
             catch (Exception ex)
             {
 
             }
 
+           
 
         }
         private void ChequeDetail_Load(object sender, EventArgs e)
@@ -155,6 +181,8 @@ namespace DarkDemo
 
         private void DrpCustomer_SelectedIndexChanged(object sender, EventArgs e)
         {
+            pictureBox1.Image = DarkDemo.Properties.Resources.photo_camera;
+            pictureBox2.Image = DarkDemo.Properties.Resources.scanner;
             try
             {
                 int ID = int.Parse(DrpCustomer.SelectedValue.ToString());
@@ -189,7 +217,8 @@ namespace DarkDemo
                         button.Font = new Font(button.Font, FontStyle.Bold);
                         button.Text = "Image :" + i;
                         button.ForeColor = Color.Black;
-                        button.BackColor = Color.White;
+                        button.BackColor = Color.FromArgb(132, 9, 117);
+                      
                         button.Click += new System.EventHandler(this.btnButton_Click);
                         // labelName4.TextAlign = ContentAlignment.TopCenter;
                         //labelName.Parent = picture;
@@ -232,7 +261,8 @@ namespace DarkDemo
                         button.Font = new Font(button.Font, FontStyle.Bold);
                         button.Text = "Image :" + i;
                         button.ForeColor = Color.Black;
-                        button.BackColor = Color.White;
+                        button.BackColor = Color.FromArgb(132, 9, 117);
+
                         button.Click += new System.EventHandler(this.btnButton_Click2);
                         // labelName4.TextAlign = ContentAlignment.TopCenter;
                         //labelName.Parent = picture;
@@ -265,6 +295,7 @@ namespace DarkDemo
             var rec = db.tblScannerImages.Where(p => p.ScanID == ImageID).FirstOrDefault();
             pictureBox2.Image = ByteArrayToImage(rec.MainScanImage);
 
+            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
 
 
         }
@@ -276,13 +307,14 @@ namespace DarkDemo
             var rec = db.tblCameraImages.Where(p => p.ImageID == ImageID).FirstOrDefault();
             pictureBox1.Image = ByteArrayToImage(rec.MainImage);
 
+            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
 
 
         }
         public bool IsEmpty()
         {
             if (txtAmount.Text.Trim() == string.Empty || txtCompanyName.Text.Trim() == string.Empty || txtFee.Text.Trim() == string.Empty
-                || txtNetAmount.Text.Trim() == string.Empty || txtFeeAuto.Text.Trim() == string.Empty)
+                || txtNetAmount.Text.Trim() == string.Empty || txtFeeAuto.Text.Trim() == string.Empty||txtCheckNo.Text.Trim()==string.Empty)
             {
                 return true;
             }
@@ -298,7 +330,7 @@ namespace DarkDemo
             txtAmount.Text = string.Empty;
             txtNetAmount.Text = string.Empty;
             txtFeeAuto.Text = string.Empty;
-
+            txtCheckNo.Text = string.Empty;
             pictureBox2.Image = DarkDemo.Properties.Resources.photo_camera;
             pictureBox1.Image = DarkDemo.Properties.Resources.scanner;
 
@@ -309,7 +341,8 @@ namespace DarkDemo
             {
                 tblCustomerCheck obj = new tblCustomerCheck();
                 obj.CashedDate = DateTime.Now;
-                obj.CashedBy = "";
+                obj.CashedBy = FrmLogin.Username;
+                obj.CheckNo = txtCheckNo.Text;
                 obj.CompanyName = txtCompanyName.Text;
                 obj.CheckAmount = double.Parse(txtAmount.Text);
                 obj.NetAmount = double.Parse(txtNetAmount.Text);
@@ -406,7 +439,7 @@ namespace DarkDemo
 
         private void ChequeDetail_Paint(object sender, PaintEventArgs e)
         {
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(41, 44, 51), ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(249, 173, 45), ButtonBorderStyle.Solid);
 
         }
     }

@@ -36,6 +36,7 @@
           <Property Name="NetAmount" Type="float" />
           <Property Name="CashedDate" Type="datetime" />
           <Property Name="CashedBy" Type="nvarchar" MaxLength="200" />
+          <Property Name="CheckNo" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="tblCustomerInfo">
           <Key>
@@ -50,7 +51,7 @@
           <Property Name="CusState" Type="nvarchar" MaxLength="200" />
           <Property Name="CusZipCode" Type="int" />
           <Property Name="CusDriverLicense" Type="nvarchar" MaxLength="200" />
-          <Property Name="CusDOB" Type="datetime" />
+          <Property Name="CusDOB" Type="nvarchar" MaxLength="100" />
           <Property Name="CusCellPhone" Type="nvarchar" MaxLength="200" />
           <Property Name="CusWorkPhone" Type="nvarchar" MaxLength="200" />
           <Property Name="CusSSn" Type="nvarchar" MaxLength="200" />
@@ -172,6 +173,7 @@
           <Property Name="CashedDate" Type="DateTime" Precision="3" />
           <Property Name="CashedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="tblCustomerInfo" Relationship="Self.FK__tblCustom__Custo__1273C1CD" FromRole="tblCustomerCheck" ToRole="tblCustomerInfo" />
+          <Property Name="CheckNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tblCustomerInfo">
           <Key>
@@ -186,7 +188,7 @@
           <Property Name="CusState" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="CusZipCode" Type="Int32" />
           <Property Name="CusDriverLicense" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="CusDOB" Type="DateTime" Precision="3" />
+          <Property Name="CusDOB" Type="String" Nullable="true" MaxLength="100" Unicode="true" FixedLength="false" />
           <Property Name="CusCellPhone" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="CusWorkPhone" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="CusSSn" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
@@ -339,6 +341,7 @@
           <EntitySetMapping Name="tblCustomerChecks">
             <EntityTypeMapping TypeName="DBLiquiorShopModel.tblCustomerCheck">
               <MappingFragment StoreEntitySet="tblCustomerCheck">
+                <ScalarProperty Name="CheckNo" ColumnName="CheckNo" />
                 <ScalarProperty Name="CheckID" ColumnName="CheckID" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
